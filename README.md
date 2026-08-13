@@ -1,4 +1,4 @@
-# combine-source-map [![build status](https://secure.travis-ci.org/thlorenz/combine-source-map.png)](http://travis-ci.org/thlorenz/combine-source-map)
+# combine-source-map
 
 Add source maps of multiple files, offset them and then combine them into one source map.
 
@@ -42,7 +42,7 @@ console.log(sm);
 
 ## Installation
 
-    npm install combine-source-map
+    npm install @unabandoned/combine-source-map
 
 ## API
 
@@ -107,5 +107,5 @@ console.log(sm);
 
 ## Example 
 
-Read and run the [more elaborate example](https://github.com/thlorenz/combine-source-map/blob/master/example/two-files.js) 
+Read and run the [more elaborate example](https://github.com/unabandoned/combine-source-map/blob/master/example/two-files.js) 
 in order to get a better idea how things work.
