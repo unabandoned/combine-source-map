@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/unabandoned/combine-source-map/compare/combine-source-map-v1.0.0...combine-source-map-v1.0.1) (2026-08-13)
+
+
+### Bug Fixes
+
+* drop the abandoned inline-source-map dependency ([#13](https://github.com/unabandoned/combine-source-map/issues/13)) ([b497072](https://github.com/unabandoned/combine-source-map/commit/b4970727e4374d0780561ce02dbdc25c46e26018))
+* drop the abandoned lodash.memoize dependency ([#11](https://github.com/unabandoned/combine-source-map/issues/11)) ([023e2d5](https://github.com/unabandoned/combine-source-map/commit/023e2d5df3e5035b4e054bc63f8098d2fd99b947))
+
 ## [1.0.0](https://github.com/unabandoned/combine-source-map/compare/combine-source-map-v0.8.1...combine-source-map-v1.0.0) (2026-08-13)
 
 
