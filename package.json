@@ -28,7 +28,7 @@
     "convert-source-map": "2.0.0",
     "inline-source-map": "0.6.3",
     "lodash.memoize": "4.1.2",
-    "source-map": "0.6.1"
+    "source-map": "0.8.0"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.1",

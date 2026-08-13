@@ -35,12 +35,13 @@ var barFile = {
 };
 
 var offset = { line: 2 };
-var base64 = combine
+combine
   .create('bundle.js')
   .addFile(fooFile, offset)
   .addFile(barFile, { line: offset.line + 8 })
-  .base64();
-
-var sm = convert.fromBase64(base64).toObject();
-console.log('Combined source maps:\n', sm);
-console.log('\nMappings:\n', sm.mappings);
+  .base64()
+  .then(function (base64) {
+    var sm = convert.fromBase64(base64).toObject();
+    console.log('Combined source maps:\n', sm);
+    console.log('\nMappings:\n', sm.mappings);
+  });

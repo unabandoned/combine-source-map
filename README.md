@@ -2,9 +2,15 @@
 
 Add source maps of multiple files, offset them and then combine them into one source map.
 
+> **Breaking change (source-map 8):** this fork uses [`source-map`](https://github.com/mozilla/source-map)
+> 8, whose `SourceMapConsumer` is asynchronous (WebAssembly-backed). As a result
+> `Combiner.prototype.base64()` and `Combiner.prototype.comment()` now return a
+> `Promise`. `create()` and `addFile()` stay synchronous and chainable, so only the
+> final call needs to be awaited.
+
 ```js
 var convert = require('convert-source-map');
-var combine = require('combine-source-map');
+var combine = require('@unabandoned/combine-source-map');
 
 var fooComment = '//# sourceMappingURL=data:application/json;base64,eyJ2Z [..] pzJylcbiJdfQ==';
 var barComment = '//# sourceMappingURL=data:application/json;base64,eyJ2Z [..] VjaycpXG4iXX0=';
@@ -19,7 +25,7 @@ var barFile = {
 };
 
 var offset = { line: 2 };
-var base64 = combine
+var base64 = await combine
   .create('bundle.js')
   .addFile(fooFile, offset)
   .addFile(barFile, { line: offset.line + 8 })
@@ -62,15 +68,18 @@ console.log(sm);
 
 ```
 /**
- * Adds map to underlying source map.
+ * Queues a map to be combined.
  * If source contains a source map comment that has the source of the original file inlined it will offset these
  * mappings and include them.
- * If no source map comment is found or it has no source inlined, mappings for the file will be generated and included
- * 
- * @name addMap
+ * If no source map comment is found or it has no source inlined, mappings for the file will be generated and included.
+ *
+ * Files are combined lazily when base64() or comment() is called, so this stays synchronous and chainable.
+ *
+ * @name addFile
  * @function
  * @param opts {Object} { sourceFile: {String}, source: {String} }
  * @param offset {Object} { line: {Number}, column: {Number} }
+ * @return {Object} this Combiner instance, for chaining
  */
 ```
 
@@ -80,7 +89,7 @@ console.log(sm);
 /**
 * @name base64
 * @function
-* @return {String} base64 encoded combined source map
+* @return {Promise<String>} promise for the base64 encoded combined source map
 */
 ```
 
@@ -90,7 +99,7 @@ console.log(sm);
 /**
  * @name comment
  * @function
- * @return {String} base64 encoded sourceMappingUrl comment of the combined source map
+ * @return {Promise<String>} promise for the base64 encoded sourceMappingUrl comment of the combined source map
  */
 ```
 

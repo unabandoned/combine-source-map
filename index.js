@@ -57,51 +57,54 @@ function hasInlinedSource(existingMap) {
   return existingMap.sourcesContent && !!existingMap.sourcesContent[0];
 }
 
-function Combiner(file, sourceRoot) {
-  // since we include the original code in the map sourceRoot actually not needed
-  this.generator = createGenerator({ file: file || 'generated.js', sourceRoot: sourceRoot });
+function addGeneratedMap(generator, sourceFile, source, offset) {
+  generator.addGeneratedMappings(sourceFile, source, offset);
+  generator.addSourceContent(sourceFile, source);
 }
 
-Combiner.prototype._addGeneratedMap = function (sourceFile, source, offset) {
-  this.generator.addGeneratedMappings(sourceFile, source, offset);
-  this.generator.addSourceContent(sourceFile, source);
-  return this;
-};
+function addExistingMap(generator, sourceFile, existingMap, offset) {
+  return mappingsFromMap(existingMap).then(function (mappings) {
+    // add all of the sources from the map
+    for (var i = 0, len = existingMap.sources.length; i < len; i++) {
+      if (!existingMap.sourcesContent) continue;
 
-Combiner.prototype._addExistingMap = function (sourceFile, source, existingMap, offset) {
-  var mappings = mappingsFromMap(existingMap);
+      generator.addSourceContent(
+        rebaseRelativePath(sourceFile, existingMap.sourceRoot, existingMap.sources[i]),
+        existingMap.sourcesContent[i]);
+    }
 
-  // add all of the sources from the map
-  for (var i = 0, len = existingMap.sources.length; i < len; i++) {
-    if (!existingMap.sourcesContent) continue;
+    // add the mappings, preserving the original mapping 'source'
+    mappings.forEach(function(mapping) {
+      // Add the mappings one at a time because 'inline-source-map' doesn't handle
+      // mapping source filenames. The mapping.source already takes sourceRoot into account
+      // per the SMConsumer.eachMapping function, so pass null for the root here.
+      generator.addMappings(
+        rebaseRelativePath(sourceFile, null, mapping.source), [mapping], offset);
+    });
+  });
+}
 
-    this.generator.addSourceContent(
-      rebaseRelativePath(sourceFile, existingMap.sourceRoot, existingMap.sources[i]),
-      existingMap.sourcesContent[i]);
-  }
-
-  // add the mappings, preserving the original mapping 'source'
-  mappings.forEach(function(mapping) {
-    // Add the mappings one at a time because 'inline-source-map' doesn't handle
-    // mapping source filenames. The mapping.source already takes sourceRoot into account
-    // per the SMConsumer.eachMapping function, so pass null for the root here.
-    this.generator.addMappings(
-      rebaseRelativePath(sourceFile, null, mapping.source), [mapping], offset);
-  }, this);
-
-  return this;
-};
+function Combiner(file, sourceRoot) {
+  // since we include the original code in the map sourceRoot actually not needed
+  this._file = file;
+  this._sourceRoot = sourceRoot;
+  this._files = [];
+}
 
 /**
- * Adds map to underlying source map.
+ * Queues a map to be combined.
  * If source contains a source map comment that has the source of the original file inlined it will offset these
  * mappings and include them.
- * If no source map comment is found or it has no source inlined, mappings for the file will be generated and included
+ * If no source map comment is found or it has no source inlined, mappings for the file will be generated and included.
  *
- * @name addMap
+ * Files are combined lazily when `base64()` or `comment()` is called, so this
+ * method stays synchronous and chainable.
+ *
+ * @name addFile
  * @function
  * @param opts {Object} { sourceFile: {String}, source: {String} }
  * @param offset {Object} { line: {Number}, column: {Number} }
+ * @return {Object} this Combiner instance, for chaining
  */
 Combiner.prototype.addFile = function (opts, offset) {
 
@@ -109,29 +112,56 @@ Combiner.prototype.addFile = function (opts, offset) {
   if (!offset.hasOwnProperty('line'))  offset.line    =  0;
   if (!offset.hasOwnProperty('column')) offset.column =  0;
 
-  var existingMap = resolveMap(opts.source);
+  this._files.push({ opts: opts, offset: offset });
 
-  return existingMap && hasInlinedSource(existingMap)
-    ? this._addExistingMap(opts.sourceFile, opts.source, existingMap, offset)
-    : this._addGeneratedMap(opts.sourceFile, opts.source, offset);
+  return this;
+};
+
+/**
+ * Combines the queued files into a fresh source map generator.
+ *
+ * @return {Promise<Object>} promise for the underlying inline-source-map generator
+ */
+Combiner.prototype._combine = function () {
+  var self = this;
+  var generator = createGenerator({ file: this._file || 'generated.js', sourceRoot: this._sourceRoot });
+
+  // Apply each queued file in order, awaiting the asynchronous decode of any
+  // inlined map so ordering (and therefore the resulting mappings) is preserved.
+  return this._files.reduce(function (chain, file) {
+    return chain.then(function () {
+      var opts = file.opts;
+      var existingMap = resolveMap(opts.source);
+
+      return existingMap && hasInlinedSource(existingMap)
+        ? addExistingMap(generator, opts.sourceFile, existingMap, file.offset)
+        : addGeneratedMap(generator, opts.sourceFile, opts.source, file.offset);
+    });
+  }, Promise.resolve()).then(function () {
+    return generator;
+  });
 };
 
 /**
 * @name base64
 * @function
-* @return {String} base64 encoded combined source map
+* @return {Promise<String>} promise for the base64 encoded combined source map
 */
 Combiner.prototype.base64 = function () {
-  return this.generator.base64Encode();
+  return this._combine().then(function (generator) {
+    return generator.base64Encode();
+  });
 };
 
 /**
  * @name comment
  * @function
- * @return {String} base64 encoded sourceMappingUrl comment of the combined source map
+ * @return {Promise<String>} promise for the base64 encoded sourceMappingUrl comment of the combined source map
  */
 Combiner.prototype.comment = function () {
-  return this.generator.inlineMappingUrl();
+  return this._combine().then(function (generator) {
+    return generator.inlineMappingUrl();
+  });
 };
 
 /**
