@@ -1,7 +1,8 @@
 'use strict';
 /*jshint asi: true */
 
-var test            =  require('tap').test;
+var test            =  require('node:test');
+var assert          =  require('node:assert');
 var convert         =  require('convert-source-map');
 var commentRegex    =  require('convert-source-map').commentRegex;
 var combine         =  require('..');
@@ -72,11 +73,10 @@ test('add one file with inlined source', function (t) {
   var sm = convert.fromBase64(base64).toObject();
   var res = checkMappings(foo, sm, lineOffset);
 
-  t.ok(res.genLinesOffset, 'all generated lines are offset properly and columns unchanged')
-  t.ok(res.origLinesSame, 'all original lines and columns are unchanged')
-  t.deepEqual(sm.sourcesContent, foo.sourcesContent, 'includes the original source')
-  t.deepEqual(sm.sources, ['foo.coffee'], 'includes original filename')
-  t.end()
+  assert.ok(res.genLinesOffset, 'all generated lines are offset properly and columns unchanged')
+  assert.ok(res.origLinesSame, 'all original lines and columns are unchanged')
+  assert.deepEqual(sm.sourcesContent, foo.sourcesContent, 'includes the original source')
+  assert.deepEqual(sm.sources, ['foo.coffee'], 'includes original filename')
 });
 
 
@@ -101,10 +101,10 @@ test('add one file without inlined source', function (t) {
   var sm = convert.fromBase64(base64).toObject();
   var mappings = mappingsFromMap(sm);
 
-  t.deepEqual(sm.sourcesContent, [file.source], 'includes the generated source')
-  t.deepEqual(sm.sources, ['foo.js'], 'includes generated filename')
+  assert.deepEqual(sm.sourcesContent, [file.source], 'includes the generated source')
+  assert.deepEqual(sm.sources, ['foo.js'], 'includes generated filename')
 
-  t.deepEqual(
+  assert.deepEqual(
       mappings
     , [ { generated: { line: 4, column: 0 },
         original: { line: 1, column: 0 },
@@ -129,7 +129,6 @@ test('add one file without inlined source', function (t) {
         source: 'foo.js', name: null } ]
     , 'generates mappings offset by the given line'
   )
-  t.end()
 })
 
 test('add one file with inlined sources from multiple files', function(t) {
@@ -163,16 +162,16 @@ test('add one file with inlined sources from multiple files', function(t) {
   var sm = convert.fromBase64(base64).toObject();
 
 
-  t.deepEqual(sm.sources, ['one.js', 'two.js', 'three.js', 'four.js'], 'include the correct source');
+  assert.deepEqual(sm.sources, ['one.js', 'two.js', 'three.js', 'four.js'], 'include the correct source');
 
-  t.deepEqual(sm.sourcesContent, [
+  assert.deepEqual(sm.sourcesContent, [
     'console.log(1);',
     'console.log(2);',
     'console.log(3);',
     'console.log(4);'
   ], 'include the correct source file content');
 
-  t.deepEqual(
+  assert.deepEqual(
       mappingsFromMap(sm)
     , [ { original: { column: 0, line: 1 },
         generated: { column: 0, line: 1 },
@@ -190,7 +189,6 @@ test('add one file with inlined sources from multiple files', function(t) {
         generated: { column: 0, line: 4 },
         source: 'four.js',
         name: null } ], 'should properly map multiple files');
-  t.end()
 });
 
 test('relative path from multiple files', function(t) {
@@ -246,18 +244,18 @@ test('relative path from multiple files', function(t) {
 
   var sm = convert.fromBase64(base64).toObject();
 
-  t.deepEqual(sm.sources, ['src/package1/sub/one.js', 'src/package1/sub/two.js', 
+  assert.deepEqual(sm.sources, ['src/package1/sub/one.js', 'src/package1/sub/two.js', 
     'src/package2/sub/three.js', 'src/package2/sub/four.js'], 
     'include the correct source');
 
-  t.deepEqual(sm.sourcesContent, [
+  assert.deepEqual(sm.sourcesContent, [
     'console.log(1);',
     'console.log(2);',
     'console.log(3);',
     'console.log(4);'
   ], 'include the correct source file content');
 
-  t.deepEqual(
+  assert.deepEqual(
       mappingsFromMap(sm)
     , [ { original: { column: 0, line: 1 },
         generated: { column: 0, line: 1 },
@@ -275,7 +273,6 @@ test('relative path from multiple files', function(t) {
         generated: { column: 0, line: 4 },
         source: 'src/package2/sub/four.js',
         name: null } ], 'should properly map multiple files');
-  t.end()
 });
 
 test('relative path when source and file name are the same', function(t) {
@@ -310,10 +307,10 @@ test('relative path when source and file name are the same', function(t) {
 
   var sm = convert.fromBase64(base64).toObject();
 
-  t.deepEqual(sm.sources, ['a/b/one.js', 'a/b/two.js'],
+  assert.deepEqual(sm.sources, ['a/b/one.js', 'a/b/two.js'],
     'include the correct source');
 
-  t.deepEqual(
+  assert.deepEqual(
       mappingsFromMap(sm)
     , [ { original: { column: 0, line: 1 },
         generated: { column: 0, line: 1 },
@@ -323,7 +320,6 @@ test('relative path when source and file name are the same', function(t) {
         generated: { column: 0, line: 2 },
         source: 'a/b/two.js',
         name: null } ], 'should properly map multiple files');
-  t.end()
 });
 
 test('remove comments', function (t) {
@@ -334,14 +330,13 @@ test('remove comments', function (t) {
     return matches ? matches.length : 0;
   }
 
-  t.equal(sourcemapComments('var a = 1;\n' + mapComment), 1);
+  assert.equal(sourcemapComments('var a = 1;\n' + mapComment), 1);
 
   [ ''
   , 'var a = 1;\n' + mapComment
   , 'var a = 1;\n' + mapComment + '\nvar b = 5;\n' + mapComment
   ] .forEach(function (x) {
     var removed = combine.removeComments(x)
-    t.equal(sourcemapComments(removed), 0)
+    assert.equal(sourcemapComments(removed), 0)
   })
-  t.end()
 })
