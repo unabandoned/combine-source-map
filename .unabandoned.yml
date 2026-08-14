@@ -1,0 +1,25 @@
+schema: 1
+
+package: "@unabandoned/combine-source-map"
+
+upstream:
+  repo: thlorenz/combine-source-map
+  reason: "unmaintained upstream — left idle while its dependency tree ages"
+
+summary: >-
+  Combines the source maps of multiple files — offsetting each — into a single
+  source map for a concatenated bundle.
+
+why-forked: >-
+  A browserify source-map helper that went unmaintained while its dependency
+  tree aged; forked so Renovate keeps that tree current for consumers.
+
+status: active
+
+used-by:
+  - consumer: "@unabandoned/browser-pack"
+    purpose: "Builds the combined source map for the packed bundle."
+  - consumer: "@unabandoned/insert-module-globals"
+    purpose: "Keeps source maps aligned after implicit globals are injected."
+
+tags: [browserify, source-map, bundle]
