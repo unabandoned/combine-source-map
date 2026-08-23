@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.2](https://github.com/unabandoned/combine-source-map/compare/combine-source-map-v1.0.1...combine-source-map-v1.0.2) (2026-08-23)
+
+
+### Dependencies & maintenance
+
+* add .unabandoned.yml dashboard metadata ([#15](https://github.com/unabandoned/combine-source-map/issues/15)) ([8d8b7ad](https://github.com/unabandoned/combine-source-map/commit/8d8b7ad0a99888051adfb47a337829c03659aab7))
+* **deps:** update commitlint monorepo to v21.2.2 ([#19](https://github.com/unabandoned/combine-source-map/issues/19)) ([808f1b9](https://github.com/unabandoned/combine-source-map/commit/808f1b923f550255e8bd54ae0be5a122c046b343))
+* **deps:** update unabandoned/.github action to v1.0.1 ([#20](https://github.com/unabandoned/combine-source-map/issues/20)) ([2df34a3](https://github.com/unabandoned/combine-source-map/commit/2df34a30924bff354eba94d80e61bea60482dd6e))
+* **deps:** update unabandoned/.github action to v1.0.2 ([#21](https://github.com/unabandoned/combine-source-map/issues/21)) ([31e482e](https://github.com/unabandoned/combine-source-map/commit/31e482e792f73e15321690ea834212125b536774))
+* **deps:** update unabandoned/.github digest to 88ce617 ([#14](https://github.com/unabandoned/combine-source-map/issues/14)) ([ecc324c](https://github.com/unabandoned/combine-source-map/commit/ecc324c6fd27bfaf1afd537b27293f2542d96bb4))
+* pin reusable workflows to the @unabandoned/.github v1.0.0 release ([#18](https://github.com/unabandoned/combine-source-map/issues/18)) ([01032b3](https://github.com/unabandoned/combine-source-map/commit/01032b3dbed6881fa5c28981b054a1b0972f420e))
+
 ## [1.0.1](https://github.com/unabandoned/combine-source-map/compare/combine-source-map-v1.0.0...combine-source-map-v1.0.1) (2026-08-13)
 
 
