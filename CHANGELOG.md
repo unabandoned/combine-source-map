@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/unabandoned/combine-source-map/compare/combine-source-map-v1.0.3...combine-source-map-v1.0.4) (2026-09-11)
+
+
+### Dependencies & maintenance
+
+* **deps:** update unabandoned/.github action to v1.0.4 ([#24](https://github.com/unabandoned/combine-source-map/issues/24)) ([6e5c829](https://github.com/unabandoned/combine-source-map/commit/6e5c829e8fed2076047127de270b59a91a9bd947))
+
 ## [1.0.3](https://github.com/unabandoned/combine-source-map/compare/combine-source-map-v1.0.2...combine-source-map-v1.0.3) (2026-08-28)
 
 
