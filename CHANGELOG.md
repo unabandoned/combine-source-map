@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/unabandoned/combine-source-map/compare/combine-source-map-v1.0.4...combine-source-map-v1.0.5) (2026-09-23)
+
+
+### Dependencies & maintenance
+
+* **deps:** update commitlint monorepo to v21.2.3 ([#28](https://github.com/unabandoned/combine-source-map/issues/28)) ([93fbfd6](https://github.com/unabandoned/combine-source-map/commit/93fbfd6e032150b48f2f06af1bde51a4d93fa635))
+
 ## [1.0.4](https://github.com/unabandoned/combine-source-map/compare/combine-source-map-v1.0.3...combine-source-map-v1.0.4) (2026-09-22)
 
 
