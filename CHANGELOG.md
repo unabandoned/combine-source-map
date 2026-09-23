@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/unabandoned/combine-source-map/compare/combine-source-map-v1.0.4...combine-source-map-v1.0.5) (2026-09-23)
+
+
+### Bug Fixes
+
+* stop dev-only commits from cutting releases ([#30](https://github.com/unabandoned/combine-source-map/issues/30)) ([e02854b](https://github.com/unabandoned/combine-source-map/commit/e02854b911cd061121d3d7a8d5299dd923b43029))
+
 ## [1.0.4](https://github.com/unabandoned/combine-source-map/compare/combine-source-map-v1.0.3...combine-source-map-v1.0.4) (2026-09-22)
 
 
